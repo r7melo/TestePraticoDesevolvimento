@@ -49,17 +49,12 @@ $(document).ready(function () {
 
     // Formatação do Campo CPF (Máscara Auto)
     function aplicarMascaraCPF(cpf) {
-        // Remove qualquer caractere que não seja número
         cpf = cpf.replace(/\D/g, '');
 
-        // Aplica a máscara na medida em que os números são digitados
-        if (cpf.length > 3 && cpf.length <= 6) {
-            cpf = cpf.replace(/^(\d{3})(\d)/, "$1.$2");
-        } else if (cpf.length > 6 && cpf.length <= 9) {
-            cpf = cpf.replace(/^(\d{3})(\d{3})(\d)/, "$1.$2.$3");
-        } else if (cpf.length > 9) {
-            cpf = cpf.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
-        }
+        cpf = cpf.replace(/(\d{3})(\d)/, "$1.$2");
+        cpf = cpf.replace(/(\d{3})(\d)/, "$1.$2");
+        cpf = cpf.replace(/(\d{3})(\d{2})$/, "$1-$2");
+
         return cpf;
     }
 
