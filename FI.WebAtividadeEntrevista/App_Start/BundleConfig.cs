@@ -8,6 +8,8 @@ namespace FI.WebAtividadeEntrevista
         // For more information on bundling, visit https://go.microsoft.com/fwlink/?LinkId=301862
         public static void RegisterBundles(BundleCollection bundles)
         {
+            #region BUNDLES Scripts Application
+
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                         "~/Scripts/jquery-{version}.js"));
 
@@ -28,6 +30,9 @@ namespace FI.WebAtividadeEntrevista
             bundles.Add(new ScriptBundle("~/bundles/jtable").Include(
                       "~/Scripts/jtable/jquery.jtable.min.js",
                       "~/Scripts/jtable/localization/jquery.jtable.pt-BR.js"));
+            #endregion
+
+            #region BUNDLES Business Rule
 
             bundles.Add(new ScriptBundle("~/bundles/clientes").Include(
                       "~/Scripts/Clientes/FI.Clientes.js"));
@@ -44,6 +49,8 @@ namespace FI.WebAtividadeEntrevista
 
             bundles.Add(new StyleBundle("~/Content/jtable").Include(
                       "~/Scripts/jtable/themes/metro/darkgray/jtable.css"));
+
+            #endregion
         }
     }
 }
