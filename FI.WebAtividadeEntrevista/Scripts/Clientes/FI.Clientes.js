@@ -2,34 +2,62 @@
 $(document).ready(function () {
     $('#formCadastro').submit(function (e) {
         e.preventDefault();
+
+        cpf = $(this).find("#CPF").val().replace(/\D/g, '');
+
+        form_cliente = {
+            "NOME": $(this).find("#Nome").val(),
+            "CEP": $(this).find("#CEP").val(),
+            "Email": $(this).find("#Email").val(),
+            "Sobrenome": $(this).find("#Sobrenome").val(),
+            "Nacionalidade": $(this).find("#Nacionalidade").val(),
+            "Estado": $(this).find("#Estado").val(),
+            "Cidade": $(this).find("#Cidade").val(),
+            "Logradouro": $(this).find("#Logradouro").val(),
+            "Telefone": $(this).find("#Telefone").val(),
+            "CPF": cpf
+        }
+
         $.ajax({
-            url: urlPost,
+            url: '/Validator/ValidarCPF',
             method: "POST",
-            data: {
-                "NOME": $(this).find("#Nome").val(),
-                "CEP": $(this).find("#CEP").val(),
-                "Email": $(this).find("#Email").val(),
-                "Sobrenome": $(this).find("#Sobrenome").val(),
-                "Nacionalidade": $(this).find("#Nacionalidade").val(),
-                "Estado": $(this).find("#Estado").val(),
-                "Cidade": $(this).find("#Cidade").val(),
-                "Logradouro": $(this).find("#Logradouro").val(),
-                "Telefone": $(this).find("#Telefone").val(),
-                "CPF": $(this).find("#CPF").val().replace(/\D/g, '')
+            contentType: 'application/json',
+            data: JSON.stringify({ cpf: cpf }),
+            success: function (response) {
+                if (response && response.success !== undefined) {
+
+                    // Call ClienteController
+                    $.ajax({
+                        url: urlPost,
+                        method: "POST",
+                        data: form_cliente,
+                        error:
+                            function (r) {
+                                if (r.status == 400)
+                                    ModalDialog("Ocorreu um erro", r.responseJSON);
+                                else if (r.status == 500)
+                                    ModalDialog("Ocorreu um erro", "Ocorreu um erro interno no servidor.");
+                            },
+                        success:
+                            function (r) {
+                                ModalDialog("Sucesso!", r)
+                                $("#formCadastro")[0].reset();
+                            }
+                    });
+                   
+                    $('#validacaoCPF').html('');
+                }
+                else {
+                    $('#validacaoCPF').html('<p style="color: red;">Resposta inesperada do servidor.</p>');
+                }
             },
-            error:
-            function (r) {
-                if (r.status == 400)
-                    ModalDialog("Ocorreu um erro", r.responseJSON);
-                else if (r.status == 500)
-                    ModalDialog("Ocorreu um erro", "Ocorreu um erro interno no servidor.");
-            },
-            success:
-            function (r) {
-                ModalDialog("Sucesso!", r)
-                $("#formCadastro")[0].reset();
+            error: function (xhr) {
+                var errorMessage = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : "Erro desconhecido.";
+                $('#validacaoCPF').html(`<p style="color: red;">${errorMessage}</p>`);
             }
         });
+
+        
     });
 
     // Formatação do Campo CPF (Máscara Auto)
