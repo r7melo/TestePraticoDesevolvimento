@@ -30,7 +30,22 @@ $(document).ready(function () {
                 $("#formCadastro")[0].reset();
             }
         });
-    })
+    });
+
+    // Formatação do Campo CPF (Máscara Auto)
+    function aplicarMascaraCPF(cpf) {
+        cpf = cpf.replace(/\D/g, '');
+
+        cpf = cpf.replace(/(\d{3})(\d)/, "$1.$2");
+        cpf = cpf.replace(/(\d{3})(\d)/, "$1.$2");
+        cpf = cpf.replace(/(\d{3})(\d{2})$/, "$1-$2");
+
+        return cpf;
+    }
+
+    document.getElementById("CPF").addEventListener("input", function (e) {
+        e.target.value = aplicarMascaraCPF(e.target.value);
+    });
     
 })
 
