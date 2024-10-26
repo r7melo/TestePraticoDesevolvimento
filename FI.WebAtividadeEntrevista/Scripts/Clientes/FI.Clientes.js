@@ -15,7 +15,7 @@ $(document).ready(function () {
                 "Cidade": $(this).find("#Cidade").val(),
                 "Logradouro": $(this).find("#Logradouro").val(),
                 "Telefone": $(this).find("#Telefone").val(),
-                "CPF": $(this).find("#CPF").val()
+                "CPF": $(this).find("#CPF").val().replace(/\D/g, '')
             },
             error:
             function (r) {
@@ -33,16 +33,6 @@ $(document).ready(function () {
     });
 
     // Formatação do Campo CPF (Máscara Auto)
-    function aplicarMascaraCPF(cpf) {
-        cpf = cpf.replace(/\D/g, '');
-
-        cpf = cpf.replace(/(\d{3})(\d)/, "$1.$2");
-        cpf = cpf.replace(/(\d{3})(\d)/, "$1.$2");
-        cpf = cpf.replace(/(\d{3})(\d{2})$/, "$1-$2");
-
-        return cpf;
-    }
-
     document.getElementById("CPF").addEventListener("input", function (e) {
         e.target.value = aplicarMascaraCPF(e.target.value);
     });
@@ -71,4 +61,15 @@ function ModalDialog(titulo, texto) {
 
     $('body').append(texto);
     $('#' + random).modal('show');
+}
+
+// Função de formatação para a máscara CPF
+function aplicarMascaraCPF(cpf) {
+    cpf = cpf.replace(/\D/g, '');
+
+    cpf = cpf.replace(/(\d{3})(\d)/, "$1.$2");
+    cpf = cpf.replace(/(\d{3})(\d)/, "$1.$2");
+    cpf = cpf.replace(/(\d{3})(\d{2})$/, "$1-$2");
+
+    return cpf;
 }
