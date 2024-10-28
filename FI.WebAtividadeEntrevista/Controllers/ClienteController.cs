@@ -23,10 +23,14 @@ namespace WebAtividadeEntrevista.Controllers
         }
 
         [HttpPost]
-        public JsonResult Incluir(ClienteModel model)
+        public JsonResult Incluir(ClienteModel cliente)
         {
-            BoCliente bo = new BoCliente();
-            
+            // OBS: Criar sistema de commit/rollback - BeginTransaction
+            // Criar uma classe DataBaseTransaction para gerenciar as alterações na base de dados
+
+            BoCliente boCliente = new BoCliente();
+            BoBeneficiario boBeneficiario = new BoBeneficiario();
+
             if (!this.ModelState.IsValid)
             {
                 List<string> erros = (from item in ModelState.Values
@@ -38,22 +42,37 @@ namespace WebAtividadeEntrevista.Controllers
             }
             else
             {
-                
-                model.Id = bo.Incluir(new Cliente()
+
+                cliente.Id = boCliente.Incluir(new Cliente()
                 {                    
-                    CEP = model.CEP,
-                    Cidade = model.Cidade,
-                    Email = model.Email,
-                    Estado = model.Estado,
-                    Logradouro = model.Logradouro,
-                    Nacionalidade = model.Nacionalidade,
-                    Nome = model.Nome,
-                    Sobrenome = model.Sobrenome,
-                    Telefone = model.Telefone,
-                    CPF = model.CPF
+                    CEP = cliente.CEP,
+                    Cidade = cliente.Cidade,
+                    Email = cliente.Email,
+                    Estado = cliente.Estado,
+                    Logradouro = cliente.Logradouro,
+                    Nacionalidade = cliente.Nacionalidade,
+                    Nome = cliente.Nome,
+                    Sobrenome = cliente.Sobrenome,
+                    Telefone = cliente.Telefone,
+                    CPF = cliente.CPF
                 });
 
-           
+                if (cliente.Beneficiarios != null && cliente.Beneficiarios.Count > 0)
+                {
+                    foreach (var beneficiario in cliente.Beneficiarios)
+                    {
+                        beneficiario.Id = boBeneficiario.Incluir(new Beneficiario()
+                        {
+                            Nome = beneficiario.Nome,
+                            CPF = beneficiario.CPF,
+                            Cliente = new Cliente()
+                            {
+                                Id = cliente.Id
+                            }
+                        });
+                    }
+                }
+                           
                 return Json("Cadastro efetuado com sucesso");
             }
         }

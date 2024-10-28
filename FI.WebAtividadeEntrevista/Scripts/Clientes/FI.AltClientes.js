@@ -16,6 +16,17 @@ $(document).ready(function () {
     $('#formCadastro').submit(function (e) {
         e.preventDefault();
 
+        beneficiarios = [];
+        table_rows = document.querySelectorAll('.table tbody tr');
+        table_rows.forEach(row => {
+            cols = row.querySelectorAll('td');
+
+            beneficiarios.push({
+                CPF: cols[0].innerText.trim(),
+                Nome: cols[1].innerText.trim()
+            });
+        });
+
         cpf = $(this).find("#CPF").val().replace(/\D/g, '');
 
         form_cliente = {
@@ -28,7 +39,8 @@ $(document).ready(function () {
             "Cidade": $(this).find("#Cidade").val(),
             "Logradouro": $(this).find("#Logradouro").val(),
             "Telefone": $(this).find("#Telefone").val(),
-            "CPF": cpf
+            "CPF": cpf,
+            "Beneficiarios": beneficiarios
         }
 
         $.ajax({
@@ -59,10 +71,9 @@ $(document).ready(function () {
                             }
                     });
 
-                    $('#validacaoCPF').html('');
                 }
                 else {
-                    $('#validacaoCPF').html('<p style="color: red;">Resposta inesperada do servidor.</p>');
+                    ModalDialog("Ocorreu um erro", "Resposta inesperada do servidor.");
                 }
             },
             error: function (xhr) {

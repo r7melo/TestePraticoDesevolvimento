@@ -28,7 +28,6 @@ namespace WebAtividadeEntrevista.Models
         /// <summary>
         /// Cliente
         /// </summary>
-        [Required]
         public ClienteModel Cliente { get; set; }
 
 
