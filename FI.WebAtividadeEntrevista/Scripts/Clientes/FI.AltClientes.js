@@ -157,8 +157,8 @@ function AdicaoEventoBtnExibirModalBeneficiario() {
                             <td>`+ cpf + `</td>
                             <td>`+ nome + `</td>
                             <td>
-                                <button type="button" class="btn btn-primary">Alterar</button>
-                                <button type="button" class="btn btn-primary">Excluir</button>
+                                <button type="button" id="0" class="btn btn-primary alterar-beneficiario">Alterar</button>
+                                <button type="button" id="0" class="btn btn-primary excluir-beneficiario">Excluir</button>
                             </td>
                         </tr>
 
@@ -194,7 +194,6 @@ function GetIdCliente() {
 function ConstruirLogicaModal() {
 
     // Definição da ação do botão Incluir - Beneficiário
-
     $('#btnIncluirBeneficiario').click(function () {
 
         cpf = $('#CPF-Beneficiario').val().trim();
@@ -217,14 +216,17 @@ function ConstruirLogicaModal() {
                                 <td>`+ cpf + `</td>
                                 <td>`+ nome + `</td>
                                 <td>
-                                    <button type="button" class="btn btn-primary">Alterar</button>
-                                    <button type="button" class="btn btn-primary">Excluir</button>
+                                    <button type="button" id="0" class="btn btn-primary alterar-beneficiario">Alterar</button>
+                                    <button type="button" id="0" class="btn btn-primary excluir-beneficiario">Excluir</button>
                                 </td>
                             </tr>
 
                         `);
 
                         beneficiarios_list_global.push([cpf, nome]);
+                        $('#CPF-Beneficiario').val('');
+                        $('#Nome-Beneficiario').val('');
+                        ConstruirLogicaModal();
                     }
                 }
                 else {
@@ -236,6 +238,39 @@ function ConstruirLogicaModal() {
                 ModalDialog("Ocorreu um erro", errorMessage);
             }
         });
+
+    });
+
+    // Definição da ação do botão Excluir - Beneficiário
+    $('.excluir-beneficiario').click(function () {
+
+        id = $(this).attr('id');
+        row = $(this).closest('tr');
+
+        if (id != 0) {
+            $.ajax({
+                url: '/Beneficiario/Excluir/'+id,
+                method: "POST",
+                contentType: 'application/json',
+                data: JSON.stringify({ id: id }),
+                success: function (response) {
+                    if (response !== undefined) {
+                       row.remove();
+                    }
+                    else {
+                        ModalDialog("Ocorreu um erro", "Resposta inesperada do servidor.");
+                    }
+                },
+                error: function (xhr) {
+                    var errorMessage = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : "Erro desconhecido.";
+                    ModalDialog("Ocorreu um erro", errorMessage);
+                }
+            });
+        }
+        else {
+            row.remove();
+        }
+        
 
     });
 }

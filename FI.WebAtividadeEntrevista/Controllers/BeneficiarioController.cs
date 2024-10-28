@@ -53,5 +53,18 @@ namespace WebAtividadeEntrevista.Controllers
             }
         }
 
+        [HttpPost]
+        public JsonResult Excluir(long id)
+        {
+           
+            BoBeneficiario boBeneficiario = new BoBeneficiario();
+
+            boBeneficiario.Excluir(id);            
+
+            return Json("Beneficiário excluído com sucesso");
+
+            
+        }
+
     }
 }

@@ -1,6 +1,8 @@
 ﻿
+
 $(document).ready(function () {
 
+    
     beneficiarios_list_global = [];
 
     $('#formCadastro').submit(function (e) {
@@ -144,8 +146,8 @@ function AdicaoEventoBtnExibirModalBeneficiario() {
                             <td>`+ cpf + `</td>
                             <td>`+ nome + `</td>
                             <td>
-                                <button type="button" class="btn btn-primary">Alterar</button>
-                                <button type="button" class="btn btn-primary">Excluir</button>
+                                <button type="button" id="0" class="btn btn-primary alterar-beneficiario">Alterar</button>
+                                <button type="button" id="0" class="btn btn-primary excluir-beneficiario">Excluir</button>
                             </td>
                         </tr>
 
@@ -172,7 +174,7 @@ function ConstruirLogicaModal() {
 
     // Definição da ação do botão Incluir - Beneficiário
 
-    $('#btnIncluirBeneficiario').click(function () {
+    $('#btnIncluirBeneficiario').click(async function () {
 
         cpf = $('#CPF-Beneficiario').val().trim();
         nome = $('#Nome-Beneficiario').val().trim();
@@ -194,14 +196,18 @@ function ConstruirLogicaModal() {
                                 <td>`+ cpf + `</td>
                                 <td>`+ nome + `</td>
                                 <td>
-                                    <button type="button" class="btn btn-primary">Alterar</button>
-                                    <button type="button" class="btn btn-primary">Excluir</button>
+                                    <button type="button" id="0" class="btn btn-primary alterar-beneficiario">Alterar</button>
+                                    <button type="button" id="0" class="btn btn-primary excluir-beneficiario">Excluir</button>
                                 </td>
                             </tr>
 
                         `);
 
                         beneficiarios_list_global.push([cpf, nome]);
+                        beneficiarios_list_global.push([cpf, nome]);
+                        $('#CPF-Beneficiario').val('');
+                        $('#Nome-Beneficiario').val('');
+                        ConstruirLogicaModal();
                     }
                 }
                 else {
@@ -213,6 +219,20 @@ function ConstruirLogicaModal() {
                 ModalDialog("Ocorreu um erro", errorMessage);
             }
         });
+
+        //DELAY
+        const $botao = $(this);
+        $botao.prop('disabled', true);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        $botao.prop('disabled', false);
+
+    });
+
+    // Definição da ação do botão Excluir - Beneficiário
+    $('.excluir-beneficiario').click(function () {
+
+        id = $(this).attr('id');
+        $(this).closest('tr').remove();
 
     });
 }

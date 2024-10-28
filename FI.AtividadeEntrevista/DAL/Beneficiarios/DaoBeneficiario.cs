@@ -70,7 +70,7 @@ namespace FI.AtividadeEntrevista.DAL
         /// <summary>
         /// Alterar o beneficiario
         /// </summary>
-        /// <param name="cliente">Objeto de cliente</param>
+        /// <param name="beneficiario">Objeto de Beneficiario</param>
         internal void Alterar(DML.Beneficiario beneficiario)
         {
             List<System.Data.SqlClient.SqlParameter> parametros = new List<System.Data.SqlClient.SqlParameter>();
@@ -83,5 +83,18 @@ namespace FI.AtividadeEntrevista.DAL
             base.Executar("FI_SP_AltBeneficiario", parametros);
         }
 
+
+        /// <summary>
+        /// Excluir Beneficiario
+        /// </summary>
+        /// <param name="beneficiario">Objeto de Beneficiario</param>
+        internal void Excluir(long Id)
+        {
+            List<System.Data.SqlClient.SqlParameter> parametros = new List<System.Data.SqlClient.SqlParameter>();
+
+            parametros.Add(new System.Data.SqlClient.SqlParameter("Id", Id));
+
+            base.Executar("FI_SP_DelBeneficiario", parametros);
+        }
     }
 }
