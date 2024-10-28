@@ -53,18 +53,22 @@ $(document).ready(function () {
             },
             error: function (xhr) {
                 var errorMessage = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : "Erro desconhecido.";
-                $('#validacaoCPF').html(`<p style="color: red;">${errorMessage}</p>`);
+                ModalDialog("Ocorreu um erro", errorMessage);
             }
         });
 
         
     });
 
+    // Função para definir a ação de click do botão ExibirModal - Beneficiario
+    AdicaoEventoBtnExibirModalBeneficiario();
+
     // Formatação do Campo CPF (Máscara Auto)
     document.getElementById("CPF").addEventListener("input", function (e) {
         e.target.value = aplicarMascaraCPF(e.target.value);
+        $('#validacaoCPF').html('');
     });
-    
+
 })
 
 function ModalDialog(titulo, texto) {
@@ -91,6 +95,7 @@ function ModalDialog(titulo, texto) {
     $('#' + random).modal('show');
 }
 
+
 // Função de formatação para a máscara CPF
 function aplicarMascaraCPF(cpf) {
     cpf = cpf.replace(/\D/g, '');
@@ -100,4 +105,25 @@ function aplicarMascaraCPF(cpf) {
     cpf = cpf.replace(/(\d{3})(\d{2})$/, "$1-$2");
 
     return cpf;
+}
+
+function AdicaoEventoBtnExibirModalBeneficiario() {
+    $("#btnExibirModalBeneficiario").click(function () {
+
+        var id = 0;
+
+        $.ajax({
+            url: '/Beneficiario/ExibirModal',
+            method: "GET",
+            data: { id: id },
+            success: function (response) {
+                $('#modalBeneficiarioConteudo').html(response);
+                $('#modalBeneficiario').modal('show');
+            },
+            error: function (xhr) {
+                var errorMessage = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : "Erro desconhecido.";
+                ModalDialog("Ocorreu um erro", errorMessage);
+            }
+        });
+    });
 }

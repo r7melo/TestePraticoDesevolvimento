@@ -15,41 +15,72 @@ $(document).ready(function () {
 
     $('#formCadastro').submit(function (e) {
         e.preventDefault();
-        
+
+        cpf = $(this).find("#CPF").val().replace(/\D/g, '');
+
+        form_cliente = {
+            "NOME": $(this).find("#Nome").val(),
+            "CEP": $(this).find("#CEP").val(),
+            "Email": $(this).find("#Email").val(),
+            "Sobrenome": $(this).find("#Sobrenome").val(),
+            "Nacionalidade": $(this).find("#Nacionalidade").val(),
+            "Estado": $(this).find("#Estado").val(),
+            "Cidade": $(this).find("#Cidade").val(),
+            "Logradouro": $(this).find("#Logradouro").val(),
+            "Telefone": $(this).find("#Telefone").val(),
+            "CPF": cpf
+        }
+
         $.ajax({
-            url: urlPost,
+            url: '/Validator/ValidarCPF',
             method: "POST",
-            data: {
-                "NOME": $(this).find("#Nome").val(),
-                "CEP": $(this).find("#CEP").val(),
-                "Email": $(this).find("#Email").val(),
-                "Sobrenome": $(this).find("#Sobrenome").val(),
-                "Nacionalidade": $(this).find("#Nacionalidade").val(),
-                "Estado": $(this).find("#Estado").val(),
-                "Cidade": $(this).find("#Cidade").val(),
-                "Logradouro": $(this).find("#Logradouro").val(),
-                "Telefone": $(this).find("#Telefone").val(),
-                "CPF": $(this).find("#CPF").val().replace(/\D/g, '')
+            contentType: 'application/json',
+            data: JSON.stringify({ cpf: cpf }),
+            success: function (response) {
+                if (response && response.success !== undefined) {
+                    
+                    // Call ClienteController
+                    $.ajax({
+                        url: urlPost,
+                        method: "POST",
+                        data: form_cliente,
+                        error:
+                            function (r) {
+                                if (r.status == 400)
+                                    ModalDialog("Ocorreu um erro", r.responseJSON);
+                                else if (r.status == 500)
+                                    ModalDialog("Ocorreu um erro", "Ocorreu um erro interno no servidor.");
+                            },
+                        success:
+                            function (r) {
+                                ModalDialog("Sucesso!", r)
+                                $("#formCadastro")[0].reset();
+                                window.location.href = urlRetorno;
+                            }
+                    });
+
+                    $('#validacaoCPF').html('');
+                }
+                else {
+                    $('#validacaoCPF').html('<p style="color: red;">Resposta inesperada do servidor.</p>');
+                }
             },
-            error:
-            function (r) {
-                if (r.status == 400)
-                    ModalDialog("Ocorreu um erro", r.responseJSON);
-                else if (r.status == 500)
-                    ModalDialog("Ocorreu um erro", "Ocorreu um erro interno no servidor.");
-            },
-            success:
-            function (r) {
-                ModalDialog("Sucesso!", r)
-                $("#formCadastro")[0].reset();                                
-                window.location.href = urlRetorno;
+            error: function (xhr) {
+                var errorMessage = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : "Erro desconhecido.";
+                $('#validacaoCPF').html(`<p style="color: red;">${errorMessage}</p>`);
             }
         });
+
+
     });
+
+    // Função para definir a ação de click do botão ExibirModal - Beneficiario
+    AdicaoEventoBtnExibirModalBeneficiario();
 
     // Formatação do Campo CPF (Máscara Auto)
     document.getElementById("CPF").addEventListener("input", function (e) {
         e.target.value = aplicarMascaraCPF(e.target.value);
+        $('#validacaoCPF').html('');
     });
 
 })
@@ -88,4 +119,25 @@ function aplicarMascaraCPF(cpf) {
     cpf = cpf.replace(/(\d{3})(\d{2})$/, "$1-$2");
 
     return cpf;
+}
+
+function AdicaoEventoBtnExibirModalBeneficiario() {
+    $("#btnExibirModalBeneficiario").click(function () {
+
+        var id = 0;
+
+        $.ajax({
+            url: '/Beneficiario/ExibirModal',
+            method: "GET",
+            data: { id: id },
+            success: function (response) {
+                $('#modalBeneficiarioConteudo').html(response);
+                $('#modalBeneficiario').modal('show');
+            },
+            error: function (xhr) {
+                var errorMessage = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : "Erro desconhecido.";
+                ModalDialog("Ocorreu um erro", errorMessage);
+            }
+        });
+    });
 }

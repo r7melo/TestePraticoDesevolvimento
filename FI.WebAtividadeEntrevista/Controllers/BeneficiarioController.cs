@@ -54,5 +54,21 @@ namespace WebAtividadeEntrevista.Controllers
             }
         }
 
+        [HttpGet]
+        public ActionResult ExibirModal(long id)
+        {
+            var model = new BeneficiarioModel()
+            {
+                CPF = "000000",
+                Nome = "nome teste",
+                Cliente = new ClienteModel()
+                {
+                    Id = id
+                }
+            };
+            
+            return PartialView("Modal", model);
+        }
+
     }
 }
