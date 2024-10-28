@@ -1,5 +1,8 @@
 ﻿
 $(document).ready(function () {
+
+    beneficiarios_list_global = [];
+
     $('#formCadastro').submit(function (e) {
         e.preventDefault();
 
@@ -72,14 +75,12 @@ $(document).ready(function () {
         
     });
 
-    // Função para definir a ação de click do botão ExibirModal - Beneficiario
+    // Função para definir a ação de click do botão ExibirModal - Beneficiário
     AdicaoEventoBtnExibirModalBeneficiario();
 
     // Formatação do Campo CPF (Máscara Auto)
-    document.getElementById("CPF").addEventListener("input", function (e) {
-        e.target.value = aplicarMascaraCPF(e.target.value);
-        $('#validacaoCPF').html('');
-    });
+    AdicaoEventoCPFMascara();
+
 
 })
 
@@ -122,20 +123,96 @@ function aplicarMascaraCPF(cpf) {
 function AdicaoEventoBtnExibirModalBeneficiario() {
     $("#btnExibirModalBeneficiario").click(function () {
 
-        var id = 0;
-
         $.ajax({
             url: '/Beneficiario/ExibirModal',
             method: "GET",
-            data: { id: id },
             success: function (response) {
                 $('#modalBeneficiarioConteudo').html(response);
                 $('#modalBeneficiario').modal('show');
+                AdicaoEventoCPFMascara();
+                ConstruirLogicaModal();
+
+                beneficiarios_list_global.forEach((row) => {
+                    cpf = row[0];
+                    nome = row[1];
+
+                    console.log(row)
+
+                    $('#lista_beneficiarios').append(`
+
+                        <tr>
+                            <td>`+ cpf + `</td>
+                            <td>`+ nome + `</td>
+                            <td>
+                                <button type="button" class="btn btn-primary">Alterar</button>
+                                <button type="button" class="btn btn-primary">Excluir</button>
+                            </td>
+                        </tr>
+
+                    `);
+                });
             },
             error: function (xhr) {
                 var errorMessage = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : "Erro desconhecido.";
                 ModalDialog("Ocorreu um erro", errorMessage);
             }
         });
+    });
+}
+
+function AdicaoEventoCPFMascara() {
+    $('.cpf-masc').on('input', function () {
+        valor = $(this).val();
+        masc = aplicarMascaraCPF(valor);
+        $(this).val(masc);
+    });
+}
+
+function ConstruirLogicaModal() {
+
+    // Definição da ação do botão Incluir - Beneficiário
+
+    $('#btnIncluirBeneficiario').click(function () {
+
+        cpf = $('#CPF-Beneficiario').val().trim();
+        nome = $('#Nome-Beneficiario').val().trim();
+
+        $.ajax({
+            url: '/Validator/ValidarCPF',
+            method: "POST",
+            contentType: 'application/json',
+            data: JSON.stringify({ cpf: cpf.replace(/\D/g, '') }),
+            success: function (response) {
+                if (response && response.success !== undefined) {
+
+                    // Incluir beneficiario
+
+                    if (cpf != '' && nome != '') {
+                        $('#lista_beneficiarios').append(`
+
+                            <tr>
+                                <td>`+ cpf + `</td>
+                                <td>`+ nome + `</td>
+                                <td>
+                                    <button type="button" class="btn btn-primary">Alterar</button>
+                                    <button type="button" class="btn btn-primary">Excluir</button>
+                                </td>
+                            </tr>
+
+                        `);
+
+                        beneficiarios_list_global.push([cpf, nome]);
+                    }
+                }
+                else {
+                    ModalDialog("Ocorreu um erro", "Resposta inesperada do servidor.");
+                }
+            },
+            error: function (xhr) {
+                var errorMessage = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : "Erro desconhecido.";
+                ModalDialog("Ocorreu um erro", errorMessage);
+            }
+        });
+
     });
 }

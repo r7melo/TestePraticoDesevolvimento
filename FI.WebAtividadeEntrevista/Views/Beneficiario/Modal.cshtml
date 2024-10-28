@@ -1,4 +1,4 @@
-@model WebAtividadeEntrevista.Models.BeneficiarioModel
+@model List<WebAtividadeEntrevista.Models.BeneficiarioModel>
 
 <div id="modalBeneficiario" class="modal fade">
     <div class="modal-dialog">
@@ -23,12 +23,12 @@
                 <div class="row">
                     <div class="col-md-4">
                         <div class="form-group">
-                            <input required="required" type="text" class="form-control" id="CPF" name="CPF" placeholder="Ex.: 010.011.111-00" maxlength="14">
+                            <input required="required" type="text" class="form-control cpf-masc" id="CPF-Beneficiario" placeholder="Ex.: 010.011.111-00" maxlength="14">
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
-                            <input required="required" type="text" class="form-control" id="Nome" name="Nome" placeholder="Ex.: da Silva" maxlength="255">
+                            <input required="required" type="text" class="form-control" id="Nome-Beneficiario" placeholder="Ex.: da Silva" maxlength="255">
                         </div>
                     </div>
                     <div class="col-md-2">
@@ -48,23 +48,18 @@
                                 <th scope="col" class="col-2">Ações</th> 
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>000.000.000-00</td>
-                                <td>Nome</td>
-                                <td>
-                                    <button type="button" class="btn btn-primary">Alterar</button>
-                                    <button type="button" class="btn btn-primary">Excluir</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>111.111.111-11</td>
-                                <td>Outro Nome</td>
-                                <td>
-                                    <button type="button" class="btn btn-primary">Alterar</button>
-                                    <button type="button" class="btn btn-primary">Excluir</button>
-                                </td>
-                            </tr>
+                        <tbody id="lista_beneficiarios">
+                            @foreach (var beneficiario in Model)
+                            {
+                                <tr id="@beneficiario.Id">
+                                    <td>@beneficiario.CPF</td>
+                                    <td>@beneficiario.Nome</td>
+                                    <td>
+                                        <button type="button" class="btn btn-primary">Alterar</button>
+                                        <button type="button" class="btn btn-primary">Excluir</button>
+                                    </td>
+                                </tr>
+                            }
                         </tbody>
                     </table>
                 </div>

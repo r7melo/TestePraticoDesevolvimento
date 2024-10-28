@@ -53,7 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="DAL\Beneficiarios\FI_SP_AltBeneficiario.sql" />
-    <Content Include="DAL\Beneficiarios\FI_SP_ConsBeneficiarios.sql" />
+    <Content Include="DAL\Beneficiarios\FI_SP_ConsBeneficiario.sql" />
     <Content Include="DAL\Beneficiarios\FI_SP_DelBeneficiario.sql" />
     <Content Include="DAL\Beneficiarios\FI_SP_IncBeneficiario.sql" />
     <Content Include="DAL\Clientes\Procedures\FI_SP_AltCliente.sql" />

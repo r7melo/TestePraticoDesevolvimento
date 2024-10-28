@@ -19,5 +19,23 @@ namespace FI.AtividadeEntrevista.BLL
             return ben.Incluir(beneficiario);
         }
 
+        /// <summary>
+        /// Lista os beneficiarios
+        /// </summary>
+        public List<DML.Beneficiario> Listar(long idcliente)
+        {
+            DAL.DaoBeneficiario cli = new DAL.DaoBeneficiario();
+            return cli.Listar(idcliente);
+        }
+
+        /// <summary>
+        /// Altera um beneficiario
+        /// </summary>
+        /// <param name="cliente">Objeto de cliente</param>
+        public void Alterar(DML.Beneficiario beneficiario)
+        {
+            DAL.DaoBeneficiario cli = new DAL.DaoBeneficiario();
+            cli.Alterar(beneficiario);
+        }
     }
 }

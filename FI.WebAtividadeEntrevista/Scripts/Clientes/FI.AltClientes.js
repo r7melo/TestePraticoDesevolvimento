@@ -1,5 +1,8 @@
 ﻿
 $(document).ready(function () {
+
+    beneficiarios_list_global = [];
+
     if (obj) {
         $('#formCadastro #Nome').val(obj.Nome);
         $('#formCadastro #CEP').val(obj.CEP);
@@ -22,6 +25,7 @@ $(document).ready(function () {
             cols = row.querySelectorAll('td');
 
             beneficiarios.push({
+                Id: row.id.trim(),
                 CPF: cols[0].innerText.trim(),
                 Nome: cols[1].innerText.trim()
             });
@@ -66,8 +70,7 @@ $(document).ready(function () {
                         success:
                             function (r) {
                                 ModalDialog("Sucesso!", r)
-                                $("#formCadastro")[0].reset();
-                                window.location.href = urlRetorno;
+                                beneficiarios_list_global = [];
                             }
                     });
 
@@ -89,10 +92,7 @@ $(document).ready(function () {
     AdicaoEventoBtnExibirModalBeneficiario();
 
     // Formatação do Campo CPF (Máscara Auto)
-    document.getElementById("CPF").addEventListener("input", function (e) {
-        e.target.value = aplicarMascaraCPF(e.target.value);
-        $('#validacaoCPF').html('');
-    });
+    AdicaoEventoCPFMascara();
 
 })
 
@@ -135,20 +135,107 @@ function aplicarMascaraCPF(cpf) {
 function AdicaoEventoBtnExibirModalBeneficiario() {
     $("#btnExibirModalBeneficiario").click(function () {
 
-        var id = 0;
+        var idcliente = GetIdCliente();
 
         $.ajax({
             url: '/Beneficiario/ExibirModal',
             method: "GET",
-            data: { id: id },
+            data: { idcliente: idcliente },
             success: function (response) {
                 $('#modalBeneficiarioConteudo').html(response);
                 $('#modalBeneficiario').modal('show');
+                AdicaoEventoCPFMascara();
+                ConstruirLogicaModal();
+
+                beneficiarios_list_global.forEach((row) => {
+                    cpf = row[0];
+                    nome = row[1];
+
+                    $('#lista_beneficiarios').append(`
+
+                        <tr id="0">
+                            <td>`+ cpf + `</td>
+                            <td>`+ nome + `</td>
+                            <td>
+                                <button type="button" class="btn btn-primary">Alterar</button>
+                                <button type="button" class="btn btn-primary">Excluir</button>
+                            </td>
+                        </tr>
+
+                    `);
+                });
             },
             error: function (xhr) {
                 var errorMessage = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : "Erro desconhecido.";
                 ModalDialog("Ocorreu um erro", errorMessage);
             }
         });
+    });
+}
+
+
+function AdicaoEventoCPFMascara() {
+    $('.cpf-masc').on('input', function () {
+        valor = $(this).val();
+        masc = aplicarMascaraCPF(valor);
+        $(this).val(masc);
+    });
+}
+
+
+function GetIdCliente() {
+    url = window.location.href;
+    partes = url.split('/');
+    id = partes[partes.length - 1];
+    return id;
+}
+
+
+function ConstruirLogicaModal() {
+
+    // Definição da ação do botão Incluir - Beneficiário
+
+    $('#btnIncluirBeneficiario').click(function () {
+
+        cpf = $('#CPF-Beneficiario').val().trim();
+        nome = $('#Nome-Beneficiario').val().trim();
+
+        $.ajax({
+            url: '/Validator/ValidarCPF',
+            method: "POST",
+            contentType: 'application/json',
+            data: JSON.stringify({ cpf: cpf.replace(/\D/g, '') }),
+            success: function (response) {
+                if (response && response.success !== undefined) {
+
+                    // Incluir beneficiario
+
+                    if (cpf != '' && nome != '') {
+                        $('#lista_beneficiarios').append(`
+
+                            <tr id="0">
+                                <td>`+ cpf + `</td>
+                                <td>`+ nome + `</td>
+                                <td>
+                                    <button type="button" class="btn btn-primary">Alterar</button>
+                                    <button type="button" class="btn btn-primary">Excluir</button>
+                                </td>
+                            </tr>
+
+                        `);
+
+                        beneficiarios_list_global.push([cpf, nome]);
+                    }
+                }
+                else {
+                    ModalDialog("Ocorreu um erro", "Resposta inesperada do servidor.");
+                }
+            },
+            error: function (xhr) {
+                var errorMessage = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : "Erro desconhecido.";
+                ModalDialog("Ocorreu um erro", errorMessage);
+            }
+        });
+
     });
 }

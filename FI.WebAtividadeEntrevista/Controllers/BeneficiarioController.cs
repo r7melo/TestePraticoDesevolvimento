@@ -22,52 +22,35 @@ namespace WebAtividadeEntrevista.Controllers
             return View();
         }
 
-        [HttpPost]
-        public JsonResult Incluir(BeneficiarioModel model)
+        [HttpGet]
+        public ActionResult ExibirModal(long idCliente = 0)
         {
-            BoBeneficiario bo = new BoBeneficiario();
-            
-            if (!this.ModelState.IsValid)
+            if (idCliente != 0)
             {
-                List<string> erros = (from item in ModelState.Values
-                                      from error in item.Errors
-                                      select error.ErrorMessage).ToList();
+                BoBeneficiario ben = new BoBeneficiario();
 
-                Response.StatusCode = 400;
-                return Json(string.Join(Environment.NewLine, erros));
+                List<Beneficiario> beneficiarios = ben.Listar(idCliente);
+
+                List<BeneficiarioModel> beneficiariosModels = new List<BeneficiarioModel>();
+
+                foreach (Beneficiario beneficiario in beneficiarios)
+                {
+                    beneficiariosModels.Add(
+                        new BeneficiarioModel()
+                        {
+                            Id = beneficiario.Id,
+                            Nome = beneficiario.Nome,
+                            CPF = beneficiario.CPF
+                        }
+                    );
+                }
+
+                return PartialView("Modal", beneficiariosModels);
             }
             else
             {
-                
-                model.Id = bo.Incluir(new Beneficiario()
-                {                    
-                    CPF = model.CPF,
-                    Nome = model.Nome,
-                    Cliente = new Cliente()
-                    {
-                        Id = model.Cliente.Id
-                    },
-                });
-
-           
-                return Json("Cadastro efetuado com sucesso");
+                return PartialView("Modal", new List<BeneficiarioModel>());
             }
-        }
-
-        [HttpGet]
-        public ActionResult ExibirModal(long id)
-        {
-            var model = new BeneficiarioModel()
-            {
-                CPF = "000000",
-                Nome = "nome teste",
-                Cliente = new ClienteModel()
-                {
-                    Id = id
-                }
-            };
-            
-            return PartialView("Modal", model);
         }
 
     }

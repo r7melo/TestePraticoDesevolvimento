@@ -78,9 +78,10 @@ namespace WebAtividadeEntrevista.Controllers
         }
 
         [HttpPost]
-        public JsonResult Alterar(ClienteModel model)
+        public JsonResult Alterar(ClienteModel cliente)
         {
-            BoCliente bo = new BoCliente();
+            BoCliente boCliente = new BoCliente();
+            BoBeneficiario boBeneficiario = new BoBeneficiario();
        
             if (!this.ModelState.IsValid)
             {
@@ -93,21 +94,55 @@ namespace WebAtividadeEntrevista.Controllers
             }
             else
             {
-                bo.Alterar(new Cliente()
+                boCliente.Alterar(new Cliente()
                 {
-                    Id = model.Id,
-                    CEP = model.CEP,
-                    Cidade = model.Cidade,
-                    Email = model.Email,
-                    Estado = model.Estado,
-                    Logradouro = model.Logradouro,
-                    Nacionalidade = model.Nacionalidade,
-                    Nome = model.Nome,
-                    Sobrenome = model.Sobrenome,
-                    Telefone = model.Telefone,
-                    CPF = model.CPF
+                    Id = cliente.Id,
+                    CEP = cliente.CEP,
+                    Cidade = cliente.Cidade,
+                    Email = cliente.Email,
+                    Estado = cliente.Estado,
+                    Logradouro = cliente.Logradouro,
+                    Nacionalidade = cliente.Nacionalidade,
+                    Nome = cliente.Nome,
+                    Sobrenome = cliente.Sobrenome,
+                    Telefone = cliente.Telefone,
+                    CPF = cliente.CPF
                 });
-                               
+
+                if (cliente.Beneficiarios != null && cliente.Beneficiarios.Count > 0)
+                {
+                    foreach (var beneficiario in cliente.Beneficiarios)
+                    {
+                        if (beneficiario.Id == 0)
+                        {
+                            beneficiario.Id = boBeneficiario.Incluir(new Beneficiario()
+                            {
+                                Nome = beneficiario.Nome,
+                                CPF = beneficiario.CPF,
+                                Cliente = new Cliente()
+                                {
+                                    Id = cliente.Id
+                                }
+                            });
+
+                        }
+                        else
+                        {
+                            boBeneficiario.Alterar(new Beneficiario()
+                            {
+                                Id = beneficiario.Id,
+                                Nome = beneficiario.Nome,
+                                CPF = beneficiario.CPF,
+                                Cliente = new Cliente()
+                                {
+                                    Id = cliente.Id
+                                }
+                            });
+                        }
+                        
+                    }
+                }
+
                 return Json("Cadastro alterado com sucesso");
             }
         }
