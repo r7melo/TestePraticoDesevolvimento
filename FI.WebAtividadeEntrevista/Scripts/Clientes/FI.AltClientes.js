@@ -48,7 +48,7 @@ $(document).ready(function () {
         }
 
         $.ajax({
-            url: '/Validator/ValidarCPF',
+            url: '/Validator/ValidarCPFCliente',
             method: "POST",
             contentType: 'application/json',
             data: JSON.stringify({ cpf: cpf }),
@@ -81,7 +81,7 @@ $(document).ready(function () {
             },
             error: function (xhr) {
                 var errorMessage = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : "Erro desconhecido.";
-                $('#validacaoCPF').html(`<p style="color: red;">${errorMessage}</p>`);
+                ModalDialog("Ocorreu um erro", errorMessage);
             }
         });
 
