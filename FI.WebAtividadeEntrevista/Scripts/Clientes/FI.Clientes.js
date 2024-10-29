@@ -179,47 +179,50 @@ function ConstruirLogicaModal() {
         cpf = $('#CPF-Beneficiario').val().trim();
         nome = $('#Nome-Beneficiario').val().trim();
 
-        $.ajax({
-            url: '/Validator/ValidarCPF',
-            method: "POST",
-            contentType: 'application/json',
-            data: JSON.stringify({ cpf: cpf.replace(/\D/g, '') }),
-            success: function (response) {
-                if (response && response.success !== undefined) {
+        if (cpf != '' && nome != '') {
 
-                    // Incluir beneficiario
+            $.ajax({
+                url: '/Validator/ValidarCPF',
+                method: "POST",
+                contentType: 'application/json',
+                data: JSON.stringify({ cpf: cpf.replace(/\D/g, '') }),
+                success: function (response) {
+                    if (response && response.success !== undefined) {
 
-                    if (cpf != '' && nome != '') {
-                        $('#lista_beneficiarios').append(`
+                        // Incluir beneficiario
 
-                            <tr>
-                                <td>`+ cpf + `</td>
-                                <td>`+ nome + `</td>
-                                <td>
-                                    <button type="button" id="0" class="btn btn-primary alterar-beneficiario">Alterar</button>
-                                    <button type="button" id="0" class="btn btn-primary excluir-beneficiario">Excluir</button>
-                                </td>
-                            </tr>
+                        if (cpf != '' && nome != '') {
+                            $('#lista_beneficiarios').append(`
 
-                        `);
+                                <tr>
+                                    <td>`+ cpf + `</td>
+                                    <td>`+ nome + `</td>
+                                    <td>
+                                        <button type="button" id="0" class="btn btn-primary alterar-beneficiario">Alterar</button>
+                                        <button type="button" id="0" class="btn btn-primary excluir-beneficiario">Excluir</button>
+                                    </td>
+                                </tr>
 
-                        beneficiarios_list_global.push([cpf, nome]);
-                        $('#CPF-Beneficiario').val('');
-                        $('#Nome-Beneficiario').val('');
+                            `);
 
-                        // Redefinição da ação dos novos botôes Excluir - Beneficiário
-                        ExcluirBeneficiario();
+                            beneficiarios_list_global.push([cpf, nome]);
+                            $('#CPF-Beneficiario').val('');
+                            $('#Nome-Beneficiario').val('');
+
+                            // Redefinição da ação dos novos botôes Excluir - Beneficiário
+                            ExcluirBeneficiario();
+                        }
                     }
+                    else {
+                        ModalDialog("Ocorreu um erro", "Resposta inesperada do servidor.");
+                    }
+                },
+                error: function (xhr) {
+                    var errorMessage = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : "Erro desconhecido.";
+                    ModalDialog("Ocorreu um erro", errorMessage);
                 }
-                else {
-                    ModalDialog("Ocorreu um erro", "Resposta inesperada do servidor.");
-                }
-            },
-            error: function (xhr) {
-                var errorMessage = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : "Erro desconhecido.";
-                ModalDialog("Ocorreu um erro", errorMessage);
-            }
-        });
+            });
+        }
 
         //DELAY
         const $botao = $(this);

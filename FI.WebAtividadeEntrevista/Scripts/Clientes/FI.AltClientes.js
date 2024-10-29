@@ -199,18 +199,19 @@ function ConstruirLogicaModal() {
         cpf = $('#CPF-Beneficiario').val().trim();
         nome = $('#Nome-Beneficiario').val().trim();
 
-        $.ajax({
-            url: '/Validator/ValidarCPF',
-            method: "POST",
-            contentType: 'application/json',
-            data: JSON.stringify({ cpf: cpf.replace(/\D/g, '') }),
-            success: function (response) {
-                if (response && response.success !== undefined) {
+        if (cpf != '' && nome != '') {
+            $.ajax({
+                url: '/Validator/ValidarCPF',
+                method: "POST",
+                contentType: 'application/json',
+                data: JSON.stringify({ cpf: cpf.replace(/\D/g, '') }),
+                success: function (response) {
+                    if (response && response.success !== undefined) {
 
-                    // Incluir beneficiario
+                        // Incluir beneficiario
 
-                    if (cpf != '' && nome != '') {
-                        $('#lista_beneficiarios').append(`
+                        if (cpf != '' && nome != '') {
+                            $('#lista_beneficiarios').append(`
 
                             <tr id="0">
                                 <td>`+ cpf + `</td>
@@ -223,21 +224,22 @@ function ConstruirLogicaModal() {
 
                         `);
 
-                        beneficiarios_list_global.push([cpf, nome]);
-                        $('#CPF-Beneficiario').val('');
-                        $('#Nome-Beneficiario').val('');
-                        ConstruirLogicaModal();
+                            beneficiarios_list_global.push([cpf, nome]);
+                            $('#CPF-Beneficiario').val('');
+                            $('#Nome-Beneficiario').val('');
+                            ConstruirLogicaModal();
+                        }
                     }
+                    else {
+                        ModalDialog("Ocorreu um erro", "Resposta inesperada do servidor.");
+                    }
+                },
+                error: function (xhr) {
+                    var errorMessage = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : "Erro desconhecido.";
+                    ModalDialog("Ocorreu um erro", errorMessage);
                 }
-                else {
-                    ModalDialog("Ocorreu um erro", "Resposta inesperada do servidor.");
-                }
-            },
-            error: function (xhr) {
-                var errorMessage = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : "Erro desconhecido.";
-                ModalDialog("Ocorreu um erro", errorMessage);
-            }
-        });
+            });
+        }
 
         //DELAY
         const $botao = $(this);
