@@ -174,7 +174,8 @@ function ConstruirLogicaModal() {
 
     // Definição da ação do botão Incluir - Beneficiário
 
-    $('#btnIncluirBeneficiario').click(async function () {
+    $('#formBeneficiario').submit(async function (e) {
+        e.preventDefault();
 
         cpf = $('#CPF-Beneficiario').val().trim();
         nome = $('#Nome-Beneficiario').val().trim();
