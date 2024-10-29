@@ -1,4 +1,5 @@
 ﻿using FI.AtividadeEntrevista.BLL;
+using FI.AtividadeEntrevista.DML;
 using System;
 using System.Web.Mvc;
 using WebAtividadeEntrevista.Utilities;
@@ -36,7 +37,7 @@ namespace WebAtividadeEntrevista.Controllers
         }
 
         [HttpPost]
-        public JsonResult ValidarCPFCliente(string cpf)
+        public JsonResult ValidarCPFCliente(string cpf, long? id)
         {
             if (string.IsNullOrWhiteSpace(cpf))
             {
@@ -55,9 +56,9 @@ namespace WebAtividadeEntrevista.Controllers
 
 
             BoCliente boCliente = new BoCliente();
-            bool existeCPF = boCliente.VerificarCPFCliente(cpf);
+            Cliente cliente = boCliente.VerificarExistencia(cpf);
 
-            if (existeCPF)
+            if (cliente != null && (cliente.Id != id))
             {
                 Response.StatusCode = 400;
                 return Json(new { success = false, message = "CPF do Beneficiário já cadastrado." });

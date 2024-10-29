@@ -4,6 +4,7 @@ $(document).ready(function () {
     beneficiarios_list_global = [];
 
     if (obj) {
+        $('#formCadastro #Id').val(obj.Id);
         $('#formCadastro #Nome').val(obj.Nome);
         $('#formCadastro #CEP').val(obj.CEP);
         $('#formCadastro #Email').val(obj.Email);
@@ -32,9 +33,12 @@ $(document).ready(function () {
         });
 
         cpf = $(this).find("#CPF").val().replace(/\D/g, '');
+        id_cliente = $(this).find("#Id").val(),
+
 
         form_cliente = {
-            "NOME": $(this).find("#Nome").val(),
+            "Id": id_cliente,
+            "Nome": $(this).find("#Nome").val(),
             "CEP": $(this).find("#CEP").val(),
             "Email": $(this).find("#Email").val(),
             "Sobrenome": $(this).find("#Sobrenome").val(),
@@ -51,7 +55,7 @@ $(document).ready(function () {
             url: '/Validator/ValidarCPFCliente',
             method: "POST",
             contentType: 'application/json',
-            data: JSON.stringify({ cpf: cpf }),
+            data: JSON.stringify({ cpf: cpf, id: id_cliente }),
             success: function (response) {
                 if (response && response.success !== undefined) {
                     
