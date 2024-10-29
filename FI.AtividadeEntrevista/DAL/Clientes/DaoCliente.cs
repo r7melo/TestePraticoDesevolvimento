@@ -162,5 +162,21 @@ namespace FI.AtividadeEntrevista.DAL
 
             return lista;
         }
+
+        /// <summary>
+        /// Verifica se o CPF existe na tabela de cliente.
+        /// </summary>
+        /// <param name="cpf">CPF do cliente</param>
+        /// <returns>Retorna true se o CPF existe, false caso contrário.</returns>
+        public bool VerificarCPFCliente(string cpf)
+        {
+            List<System.Data.SqlClient.SqlParameter> parametros = new List<System.Data.SqlClient.SqlParameter>();
+
+            parametros.Add(new System.Data.SqlClient.SqlParameter("Cpf", cpf));
+
+            DataSet ds = base.Consultar("FI_SP_ValCPFCliente", parametros);
+
+            return ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0 && ds.Tables[0].Rows[0]["Existe"].ToString() == "1";
+        }
     }
 }

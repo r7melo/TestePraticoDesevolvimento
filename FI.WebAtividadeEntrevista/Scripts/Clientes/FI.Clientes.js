@@ -14,7 +14,7 @@ $(document).ready(function () {
             cols = row.querySelectorAll('td');
 
             beneficiarios.push({
-                CPF: cols[0].innerText.trim(),
+                CPF: cols[0].innerText.trim().replace(/\D/g, ''),
                 Nome: cols[1].innerText.trim()
             });
         });
@@ -38,7 +38,7 @@ $(document).ready(function () {
         
 
         $.ajax({
-            url: '/Validator/ValidarCPF',
+            url: '/Validator/ValidarCPFCliente',
             method: "POST",
             contentType: 'application/json',
             data: JSON.stringify({ cpf: cpf }),
@@ -204,10 +204,11 @@ function ConstruirLogicaModal() {
                         `);
 
                         beneficiarios_list_global.push([cpf, nome]);
-                        beneficiarios_list_global.push([cpf, nome]);
                         $('#CPF-Beneficiario').val('');
                         $('#Nome-Beneficiario').val('');
-                        ConstruirLogicaModal();
+
+                        // Redefinição da ação dos novos botôes Excluir - Beneficiário
+                        ExcluirBeneficiario();
                     }
                 }
                 else {
@@ -229,6 +230,12 @@ function ConstruirLogicaModal() {
     });
 
     // Definição da ação do botão Excluir - Beneficiário
+    ExcluirBeneficiario();
+    
+}
+
+function ExcluirBeneficiario() {
+
     $('.excluir-beneficiario').click(function () {
 
         id = $(this).attr('id');

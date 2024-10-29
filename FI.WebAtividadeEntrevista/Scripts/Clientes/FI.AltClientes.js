@@ -194,7 +194,7 @@ function GetIdCliente() {
 function ConstruirLogicaModal() {
 
     // Definição da ação do botão Incluir - Beneficiário
-    $('#btnIncluirBeneficiario').click(function () {
+    $('#btnIncluirBeneficiario').click(async function () {
 
         cpf = $('#CPF-Beneficiario').val().trim();
         nome = $('#Nome-Beneficiario').val().trim();
@@ -238,6 +238,12 @@ function ConstruirLogicaModal() {
                 ModalDialog("Ocorreu um erro", errorMessage);
             }
         });
+
+        //DELAY
+        const $botao = $(this);
+        $botao.prop('disabled', true);
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        $botao.prop('disabled', false);
 
     });
 

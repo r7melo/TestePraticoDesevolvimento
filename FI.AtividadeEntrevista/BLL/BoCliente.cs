@@ -78,5 +78,16 @@ namespace FI.AtividadeEntrevista.BLL
             DAL.DaoCliente cli = new DAL.DaoCliente();
             return cli.VerificarExistencia(CPF);
         }
+
+        /// <summary>
+        /// Verifica se o CPF do cliente já existe no banco de dados.
+        /// </summary>
+        /// <param name="cpf">CPF do cliente</param>
+        /// <returns>Retorna true se o CPF já existe, false caso contrário.</returns>
+        public bool VerificarCPFCliente(string cpf)
+        {
+            DAL.DaoCliente cli = new DAL.DaoCliente();
+            return cli.VerificarCPFCliente(cpf);
+        }
     }
 }
