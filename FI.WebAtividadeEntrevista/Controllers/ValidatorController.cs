@@ -61,7 +61,7 @@ namespace WebAtividadeEntrevista.Controllers
             if (cliente != null && (cliente.Id != id))
             {
                 Response.StatusCode = 400;
-                return Json(new { success = false, message = "CPF do Beneficiário já cadastrado." });
+                return Json(new { success = false, message = "CPF do Cliente já cadastrado." });
             }
 
 
