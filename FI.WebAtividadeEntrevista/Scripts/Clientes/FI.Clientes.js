@@ -128,8 +128,7 @@ function AdicaoEventoBtnExibirModalBeneficiario() {
                             <td>`+ cpf + `</td>
                             <td>`+ nome + `</td>
                             <td>
-                                <button type="button" id="0" class="btn btn-primary alterar-beneficiario">Alterar</button>
-                                <button type="button" id="0" class="btn btn-primary excluir-beneficiario">Excluir</button>
+                                <button type="button" id="0" class="btn btn-danger excluir-beneficiario">Excluir</button>
                             </td>
                         </tr>
 
@@ -173,8 +172,7 @@ function ConstruirLogicaModal() {
                                     <td>`+ cpf + `</td>
                                     <td>`+ nome + `</td>
                                     <td>
-                                        <button type="button" id="0" class="btn btn-primary alterar-beneficiario">Alterar</button>
-                                        <button type="button" id="0" class="btn btn-primary excluir-beneficiario">Excluir</button>
+                                        <button type="button" id="0" class="btn btn-danger excluir-beneficiario">Excluir</button>
                                     </td>
                                 </tr>
 
