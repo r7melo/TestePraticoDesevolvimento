@@ -44,8 +44,11 @@ $(document).ready(function () {
             data: form_cliente,
             error:
                 function (r) {
-                    if (r.status == 400)
+                    if (r.status == 400) {
                         ModalDialog("Ocorreu um erro", r.responseJSON.message);
+
+                        beneficiarios_list_global = [];
+                    }
                     else if (r.status == 500)
                         ModalDialog("Ocorreu um erro", "Ocorreu um erro interno no servidor.");
                 },
