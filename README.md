@@ -34,3 +34,15 @@
 - **CLIENTES:** Adicionar campo `CPF`.
 - **BENEFICIARIOS:** Adicionar campos `ID`, `CPF`, `NOME`, `IDCLIENTE`.
 
+
+### Reestruturação do Projeto
+Diagrama:
+  ![](https://github.com/r7melo/TestePraticoDesevolvimento/blob/master/Diagrama.drawio.svg)
+
+
+
+
+
+
+
+
