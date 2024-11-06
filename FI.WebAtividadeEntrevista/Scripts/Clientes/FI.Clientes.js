@@ -46,8 +46,6 @@ $(document).ready(function () {
                 function (r) {
                     if (r.status == 400) {
                         ModalDialog("Ocorreu um erro", r.responseJSON.message);
-
-                        beneficiarios_list_global = [];
                     }
                     else if (r.status == 500)
                         ModalDialog("Ocorreu um erro", "Ocorreu um erro interno no servidor.");
@@ -56,6 +54,7 @@ $(document).ready(function () {
                 function (r) {
                     ModalDialog("Sucesso!", r)
                     $("#formCadastro")[0].reset();
+                    beneficiarios_list_global = [];
                 }
         });
 
