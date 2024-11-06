@@ -37,41 +37,23 @@ $(document).ready(function () {
 
         
 
+        // Call ClienteController
         $.ajax({
-            url: '/Validator/ValidarCPFCliente',
+            url: urlPost,
             method: "POST",
-            contentType: 'application/json',
-            data: JSON.stringify({ cpf: cpf }),
-            success: function (response) {
-                if (response && response.success !== undefined) {
-
-                    // Call ClienteController
-                    $.ajax({
-                        url: urlPost,
-                        method: "POST",
-                        data: form_cliente,
-                        error:
-                            function (r) {
-                                if (r.status == 400)
-                                    ModalDialog("Ocorreu um erro", r.responseJSON);
-                                else if (r.status == 500)
-                                    ModalDialog("Ocorreu um erro", "Ocorreu um erro interno no servidor.");
-                            },
-                        success:
-                            function (r) {
-                                ModalDialog("Sucesso!", r)
-                                $("#formCadastro")[0].reset();
-                            }
-                    });
+            data: form_cliente,
+            error:
+                function (r) {
+                    if (r.status == 400)
+                        ModalDialog("Ocorreu um erro", r.responseJSON);
+                    else if (r.status == 500)
+                        ModalDialog("Ocorreu um erro", "Ocorreu um erro interno no servidor.");
+                },
+            success:
+                function (r) {
+                    ModalDialog("Sucesso!", r)
+                    $("#formCadastro")[0].reset();
                 }
-                else {
-                    ModalDialog("Ocorreu um erro", "Resposta inesperada do servidor.");
-                }
-            },
-            error: function (xhr) {
-                var errorMessage = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : "Erro desconhecido.";
-                ModalDialog("Ocorreu um erro", errorMessage);
-            }
         });
 
         
@@ -182,18 +164,10 @@ function ConstruirLogicaModal() {
 
         if (cpf != '' && nome != '') {
 
-            $.ajax({
-                url: '/Validator/ValidarCPF',
-                method: "POST",
-                contentType: 'application/json',
-                data: JSON.stringify({ cpf: cpf.replace(/\D/g, '') }),
-                success: function (response) {
-                    if (response && response.success !== undefined) {
+            // Incluir beneficiario
 
-                        // Incluir beneficiario
-
-                        if (cpf != '' && nome != '') {
-                            $('#lista_beneficiarios').append(`
+            if (cpf != '' && nome != '') {
+                $('#lista_beneficiarios').append(`
 
                                 <tr>
                                     <td>`+ cpf + `</td>
@@ -206,23 +180,13 @@ function ConstruirLogicaModal() {
 
                             `);
 
-                            beneficiarios_list_global.push([cpf, nome]);
-                            $('#CPF-Beneficiario').val('');
-                            $('#Nome-Beneficiario').val('');
+                beneficiarios_list_global.push([cpf, nome]);
+                $('#CPF-Beneficiario').val('');
+                $('#Nome-Beneficiario').val('');
 
-                            // Redefinição da ação dos novos botôes Excluir - Beneficiário
-                            ExcluirBeneficiario();
-                        }
-                    }
-                    else {
-                        ModalDialog("Ocorreu um erro", "Resposta inesperada do servidor.");
-                    }
-                },
-                error: function (xhr) {
-                    var errorMessage = xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : "Erro desconhecido.";
-                    ModalDialog("Ocorreu um erro", errorMessage);
-                }
-            });
+                // Redefinição da ação dos novos botôes Excluir - Beneficiário
+                ExcluirBeneficiario();
+            }
         }
 
         //DELAY

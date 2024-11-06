@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using FI.AtividadeEntrevista.DML;
+using WebAtividadeEntrevista.Utilities;
 
 namespace WebAtividadeEntrevista.Controllers
 {
@@ -30,6 +31,37 @@ namespace WebAtividadeEntrevista.Controllers
 
             BoCliente boCliente = new BoCliente();
             BoBeneficiario boBeneficiario = new BoBeneficiario();
+
+            if (string.IsNullOrWhiteSpace(cliente.CPF))
+            {
+                Response.StatusCode = 400;
+                return Json(new { success = false, message = "O CPF não pode estar vazio." });
+            }
+            else
+            {
+                // Valida o CPF
+                bool isValid = CpfValidator.ValidarCPF(cliente.CPF);
+
+                if (!isValid)
+                {
+                    Response.StatusCode = 400;
+                    return Json(new { success = false, message = "O CPF informado é inválido." });
+                }
+
+                Cliente clienteVerificador = boCliente.VerificarExistencia(cliente.CPF);
+
+                if (clienteVerificador != null && (clienteVerificador.Id != cliente.Id))
+                {
+                    Response.StatusCode = 400;
+                    return Json(new { success = false, message = "CPF do Cliente já cadastrado." });
+                }
+
+                //if (!CpfValidator.APIGov(cpf)) // chamada da função com validação por API externa
+                //{
+                //    Response.StatusCode = 400;
+                //    return Json(new { success = false, message = "O CPF informado não existe." });
+                //}
+            }
 
             if (!this.ModelState.IsValid)
             {
@@ -82,7 +114,38 @@ namespace WebAtividadeEntrevista.Controllers
         {
             BoCliente boCliente = new BoCliente();
             BoBeneficiario boBeneficiario = new BoBeneficiario();
-       
+
+            if (string.IsNullOrWhiteSpace(cliente.CPF))
+            {
+                Response.StatusCode = 400;
+                return Json(new { success = false, message = "O CPF não pode estar vazio." });
+            }
+            else
+            {
+                // Valida o CPF
+                bool isValid = CpfValidator.ValidarCPF(cliente.CPF);
+
+                if (!isValid)
+                {
+                    Response.StatusCode = 400;
+                    return Json(new { success = false, message = "O CPF informado é inválido." });
+                }
+
+                Cliente clienteVerificador = boCliente.VerificarExistencia(cliente.CPF);
+
+                if (cliente != null && (clienteVerificador.Id != cliente.Id))
+                {
+                    Response.StatusCode = 400;
+                    return Json(new { success = false, message = "CPF do Cliente já cadastrado." });
+                }
+
+                //if (!CpfValidator.APIGov(cpf)) // chamada da função com validação por API externa
+                //{
+                //    Response.StatusCode = 400;
+                //    return Json(new { success = false, message = "O CPF informado não existe." });
+                //}
+            }
+
             if (!this.ModelState.IsValid)
             {
                 List<string> erros = (from item in ModelState.Values
